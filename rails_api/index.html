@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rails Apis</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var page = 25
+        $.ajax({
+          url: 'http://10.90.90.117:3000/api/v1/articles?page='+page,
+          type : "GET",
+          dataType : 'json', // data type
+          success : function(result) {
+            $.map(result.articles, function(index, art){
+              var id = index.id
+              var tblRow = "<tr>" + "<td>" + index.id + "</td>" +
+                 "<td>" + index.title + "</td>" + "<td>" + index.content + "<td>" + index.slug + "</td>" + "</td>"+"<td>"+ "<button onclick ='editFun("+id+");' id='"+id+"'>"+"Update"+"</button>" +"</td>" + "<td>"+ "<button onclick ='deleteFun("+id+");' id='"+id+"'>" + "Delete" + "</button>" + "</td>" + "</tr>"
+                $(tblRow).appendTo("#data_format tbody")
+            })
+          },
+          error: function(xhr, resp, text) {
+              console.log(xhr, resp, text);
+          }
+        })
+
+      });
+
+      function editFun(id){
+         window.location.href = "http://10.90.90.117/rails_api/form.html?id="+id;
+      }
+
+      function deleteFun(id){
+
+        $.ajax({
+          url: "http://10.90.90.117:3000/api/v1/articles/" + id +"/delete",
+          type: "DELETE",
+          dataType: 'json',
+          success: function(result){
+            window.location.href = "http://10.90.90.117/rails_api/index.html";
+          }
+        })
+      }
+    </script>
+  </head>
+  <body>
+    <div class="json_output">
+
+      <div class="container">
+        <center><h1>Articles Database</h1></center>
+
+
+        <nav aria-label="Page navigation example">
+          <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </nav>
+        <table id="data_format" class="table table-striped table-bordered table-hover">
+          <tr>
+            <th> Id </th>
+            <th> Title </th>
+            <th> Content </th>
+            <th> Slug </th>
+            <th colspan="2"> Action </th>
+          </tr>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>  

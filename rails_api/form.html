@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>New Article</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				var url_string = window.location.href
+				var url = new URL(url_string);
+				var id = url.searchParams.get("id");
+
+				if (id){
+					$("#btn_set").append("<input type='submit' value='Update' id='update' >")
+
+					$.ajax({
+				    url: "http://10.90.90.117:3000/api/v1/articles/" + id +"/edit",
+				    type: "GET",
+				    dataType: 'json',
+				    success: function(result){
+				    	console.log(result)
+				      $("#title").val(result.title)
+				      $("#content").val(result.content)
+				      $("#slug").val(result.slug)
+				    }
+				  })
+				}
+				else{
+					$("#btn_set").append("<input type='submit' value='Submit' id='register' >")
+				}
+
+			  $("#form").submit(function(){
+			    $.ajax({
+			        url: "http://10.90.90.117:3000/api/v1/articles",
+			        type : "POST",
+			        dataType : 'json',
+			        data : new FormData( this ),
+				      processData: false,
+				      contentType: false,
+			        success : function(result) {
+			          window.location.href = "http://10.90.90.117/rails_api/index.html";
+			        },
+			        error: function(xhr, resp, text) {
+			            console.log(xhr, resp, text);
+			        }
+			    })
+			  });
+
+			  $("#form").submit(function(){
+			    $.ajax({
+			        url: "http://10.90.90.117:3000/api/v1/articles/" + id +"/update",
+			        type : "PUT",
+			        dataType : 'json',
+			        data : new FormData( this ),
+				      processData: false,
+				      contentType: false,
+			        success : function(result) {
+			          window.location.href = "http://10.90.90.117/rails_api/index.html";
+			        },
+			        error: function(xhr, resp, text) {
+			            console.log(xhr, resp, text);
+			        }
+			    })
+			  });
+			})
+		</script>
+		<style type="text/css">
+        #update{
+          display: none;
+        }
+        .app_form{
+          width:40%;
+          margin-right: auto;
+          margin-left: auto;
+          background-color: lightblue;
+          margin-top: 2%;
+        }
+        .heading{
+          background-color: black;
+          color: white;
+          text-align: center;
+        }
+      </style>
+	</head>
+	<body>
+		<h1 class="heading">Respond with large amount of objects through a Rails API</h1>
+    	<div class="container app_form">
+  			<center>
+  				<h2>Article</h2>
+  			</center>
+			<form id="form" onsubmit="return false;">
+				Title:<br>
+				<input type="text" class= "form-control" name="article[title]" id="title">
+				<br>
+				Content:<br>
+				<input type="text" class= "form-control" name="article[content]" id="content" >
+				<br>
+				Slug:<br>
+				<input type="text" class= "form-control" name="article[slug]" id="slug">
+				<br>
+				<br>
+				<div id="btn_set">
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
